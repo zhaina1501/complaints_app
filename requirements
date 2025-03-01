@@ -1,0 +1,13 @@
+streamlit
+requests
+bs4
+BeautifulSoup
+re
+pandas
+pywhatkit
+datetime
+os
+selenium
+settings
+dataset
+time
