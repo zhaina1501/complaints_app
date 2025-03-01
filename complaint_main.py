@@ -7,7 +7,7 @@ from dataset import dataset_page
 def main_page():
     phone = "+77017120164"
     text = "Hello"
-    url = f"https://web.whatsapp.com"
+    url = f"https://google.com"
     webbrowser.open(url)
     st.success("Сообщение отправлено на номер")
 
