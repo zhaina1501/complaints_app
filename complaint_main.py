@@ -1,21 +1,6 @@
 import streamlit as st
-import requests
-from bs4 import BeautifulSoup
-import re
-import pandas as pd
-#import pywhatkit
-from datetime import datetime
 import os
-from selenium.webdriver.common.by import By
-from selenium.webdriver.common.keys import Keys
-from settings import settings_page
-from dataset import dataset_page
 import time
-from datetime import datetime
-from selenium.webdriver.chrome.service import Service
-from selenium.webdriver.chrome.options import Options
-from selenium.webdriver.support import expected_conditions as EC
-from selenium.webdriver.support.ui import WebDriverWait
 import webbrowser
 import pyautogui
 from time import sleep
