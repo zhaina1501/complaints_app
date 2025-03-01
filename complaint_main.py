@@ -1,9 +1,13 @@
 import streamlit as st
 import os
+import webbrowser
 from settings import settings_page
 from dataset import dataset_page
 
 def main_page():
+
+    url = f"https://web.whatsapp.com/send?phone={phone}&text={message}"
+    webbrowser.open(url)
     st.success("Сообщение отправлено на номер")
 
 def main():
