@@ -2,3 +2,4 @@ streamlit
 webbrowser
 pyautogui
 time
+os
