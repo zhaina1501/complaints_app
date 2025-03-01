@@ -7,9 +7,18 @@ from dataset import dataset_page
 def main_page():
     phone = "+77017120164"
     text = "Hello"
-    url = f"https://google.com"
-    webbrowser.open(url)
-    st.success("Сообщение отправлено на номер")
+    url = f"https://web.whatsapp.com/send?phone={phone}&text={text}"
+
+    st.title("Отправка WhatsApp сообщений")
+
+    # Автоматически открываем WhatsApp Web в новом окне
+    st.markdown(f"""
+        <script>
+            window.open("{url}");
+        </script>
+    """, unsafe_allow_html=True)
+
+    st.success("Открытие WhatsApp Web...")
 
 def main():
     st.sidebar.title("Меню")
