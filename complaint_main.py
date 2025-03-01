@@ -1,5 +1,7 @@
 import streamlit as st
 import os
+from settings import settings_page
+from dataset import dataset_page
 
 def main_page():
     st.success("Сообщение отправлено на номер")
