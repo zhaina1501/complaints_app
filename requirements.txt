@@ -1,7 +1,4 @@
 streamlit
-requests
-bs4
-pandas
-selenium
 webbrowser
 pyautogui
+time
