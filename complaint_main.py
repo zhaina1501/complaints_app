@@ -3,26 +3,23 @@ import requests
 from bs4 import BeautifulSoup
 import re
 import pandas as pd
-import pywhatkit
+#import pywhatkit
 from datetime import datetime
 import os
-from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.common.keys import Keys
 from settings import settings_page
 from dataset import dataset_page
 import time
-import csv
 from datetime import datetime
 from selenium.webdriver.chrome.service import Service
-import webbrowser
 from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.support import expected_conditions as EC
-#from webdriver_manager.chrome import ChromeDriverManager
 from selenium.webdriver.support.ui import WebDriverWait
-from time import sleep
-#from urllib import quote
+import webbrowser
 import pyautogui
+from time import sleep
+
 # надо скачать по версии chrome chromedriver по ссылке https://googlechromelabs.github.io/chrome-for-testing/known-good-versions-with-downloads.json
 def extract_complaint_info(complaint_url):
     try:
@@ -107,47 +104,14 @@ def load_from_csv_by_range(start_value, end_value, csv_filename='complaints_data
         st.error(f"Файл {csv_filename} не найден.")
         return pd.DataFrame()  # Пустой DataFrame
     
-def whatsapp_send():
-    #csv_filename='complaints_data.csv'
-    # Создаем объект WebDriver с использованием WebDriver Manager
-    numbers = ["+77017120164", "+77017120164"]
-    number1 = "+77017120164"
-    text = 'HELLO TUMAR! I LOVE YOU!'
-    driver_path = r'C:\Users\zh.yerzhanova\opencv\Scripts\complaint_project\driver\chromedriver.exe'  # Замените путь на ваш
-        
-
-    # options = webdriver.ChromeOptions()
-    # options.add_argument('--allow-profiles-outside-user-dir')
-    # options.add_argument('--enable-profile-shortcut-manager')
-    # options.add_argument(r'user-data-dir=C:\Users\zh.yerzhanova\AppData\Local\Google\Chrome\User Data\Default') # УКАЖИТЕ ПУТЬ ГДЕ ЛЕЖИТ ВАШ ФАЙЛ. Советую создать отдельную папку.
-    # options.add_argument('--profile-directory=Profile 1')
-    # options.add_argument('--profiling-flush=n')
-    # options.add_argument('--enable-aggressive-domstorage-flushing')
-    # service = Service(driver_path)
-
-    # driver = webdriver.Chrome(service=service, options=options)
-
-    # for number in numbers: 
- 
-    #     url = f"https://web.whatsapp.com/send?phone={number}&text={text}" 
-    #     driver.get(url) 
-    #     #wait.until(EC.element_to_be_clickable((By.XPATH, '/html/body/div[1]/div/div/div[5]/div/footer/div[1]/div/span[2]/div/div[2]/div[2]/button'))) 
-    #     #driver.find_element(By.XPATH, '/html/body/div[1]/div/div/div[5]/div/footer/div[1]/div/span[2]/div/div[2]/div[2]/button').click() 
-    #     #send_button = driver.find_element(By.XPATH, '//button[@data-testid="compose-btn-send"]') 
-    #     #send_button.click() 
-    #     sleep(20)
-    #     #pyautogui.press('enter')
+def send_whatsapp_message(phone, message):
+    """Открывает WhatsApp Web с нужным номером и текстом сообщения"""
+    url = f"https://web.whatsapp.com/send?phone={phone}&text={message}"
+    webbrowser.open(url)
+    time.sleep(20)  # Даем пользователю время нажать "Отправить"
+    pyautogui.press('enter')
     
-    # for number in numbers:
-    #     webbrowser.register('Chrome', None, webbrowser.BackgroundBrowser('C:\Program Files (x86)\Google\Chrome\Application\chrome.exe'))
-    # #webbrowser.get('Chrome').open_new_tab('https://web.whatsapp.com/send?phone={number1}&text={text}')
-    #     webbrowser.open(f'https://web.whatsapp.com/send?phone={number}&text={text}')
-    #     time.sleep(10)
-    #     pyautogui.press('enter')
-
-    # for number in numbers:
-    #     pywhatkit.sendwhatmsg_instantly(number, text, 10, tab_close=True) 
-
+def whatsapp_send():
     # File paths
     csv_file = "complaints_data_test.csv"
     settings_file = "settings.txt"
@@ -182,7 +146,6 @@ def whatsapp_send():
             st.success(f'Номер {phone} {name} уже был в базе данных и сообщение было отправлено ранее!')
             continue
 
-
         # Пропустить, если сообщение уже отправлено или номер отсутствует
         if whatsapp_sent == "true" or not phone or phone.lower() == "null":
             continue
@@ -192,11 +155,11 @@ def whatsapp_send():
 
         try:
             # Отправить сообщение
-            pywhatkit.sendwhatmsg_instantly(phone, personalized_message, wait_time=30, tab_close=True)
-            time.sleep(30)
+            # pywhatkit.sendwhatmsg_instantly(phone, personalized_message, wait_time=30, tab_close=True)
+            # time.sleep(30)
+            send_whatsapp_message(phone,personalized_message)
             timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
             existing_sent_status[phone] = timestamp
-
             # Update all rows with this phone number
             df.loc[df["Телефон"] == phone, "Whatsapp_Sent"] = "True"
             df.loc[df["Телефон"] == phone, "Whatsapp_Sent_Date"] = timestamp
@@ -209,6 +172,17 @@ def whatsapp_send():
     df.to_csv(csv_file, index=False, encoding="utf-8")
     st.success("Сообщения отправлены, и CSV файл обновлен.")
 
+def check_website_status(url):
+    """Проверяет доступность сайта"""
+    try:
+        response = requests.get(url, timeout=5)
+        if response.status_code == 200:
+            return True
+        else:
+            return False
+    except requests.RequestException:
+        return False
+
 # 🛠 Инициализация session_state для хранения данных
 if "start_value" not in st.session_state:
     st.session_state.start_value = 0
@@ -220,8 +194,12 @@ if "filtered_data" not in st.session_state:
     st.session_state.filtered_data = pd.DataFrame()
 
 def main_page():
+    whatsapp_send()
+    # numbers = ["+77017120164", "+77017120164"]
+    # number1 = "+77017120164"
+    # text = 'HELLO TUMAR! I LOVE YOU!'
+    # send_whatsapp_message(number1, text)
     base_url = "https://goszakup.gov.kz/ru/complaint/"
-    response = requests.get(base_url)
     st.title("Сбор данных по жалобам")
     st.markdown('[Посетите сайт госзакупок для ознакомления с диапозоном](https://goszakup.gov.kz/ru/registry/complaint)')
     #st.markdown("### Выберите диапазон согласно номерам жалоб :point_down:")
@@ -233,24 +211,26 @@ def main_page():
 
     # Кнопка для подтверждения выбора
     if st.button('Выбрать'):
-     # Проверяем, чтобы "До" было больше или равно "От"
-        if st.session_state.start_value > st.session_state.end_value:
-            st.error('Ошибка: Значение "До" должно быть больше или равно значению "От".')
+            # Проверяем доступность сайта
+        if not check_website_status(base_url):
+            st.error("Ошибка: Сайт гос закупок не доступен! Попробуйте позже.")
         else:
-            st.success(f"Вы выбрали диапазон: от {st.session_state.start_value} до {st.session_state.end_value}")
-            complaints_data = scrape_complaint_numbers(base_url, st.session_state.start_value, st.session_state.end_value)
-            if complaints_data:
-                save_to_csv(complaints_data)
-                st.success(f"Данные сохранены в файл.")
-            st.session_state.filtered_data = load_from_csv_by_range(st.session_state.start_value, st.session_state.end_value)
-            if not st.session_state.filtered_data.empty:
-                st.write("Собранные данные:")
-                st.dataframe(st.session_state.filtered_data) 
-                whatsapp_send()
+        # Проверяем, чтобы "До" было больше или равно "От"
+            if st.session_state.start_value > st.session_state.end_value:
+                st.error('Ошибка: Значение "До" должно быть больше или равно значению "От".')
             else:
-                st.write("Данные не найдены в указанном диапазоне.")  
-
-
+                st.success(f"Вы выбрали диапазон: от {st.session_state.start_value} до {st.session_state.end_value}")
+                complaints_data = scrape_complaint_numbers(base_url, st.session_state.start_value, st.session_state.end_value)
+                if complaints_data:
+                    save_to_csv(complaints_data)
+                    st.success(f"Данные сохранены в файл.")
+                st.session_state.filtered_data = load_from_csv_by_range(st.session_state.start_value, st.session_state.end_value)
+                if not st.session_state.filtered_data.empty:
+                    st.write("Собранные данные:")
+                    st.dataframe(st.session_state.filtered_data) 
+                    whatsapp_send()
+                else:
+                    st.write("Данные не найдены в указанном диапазоне.")
 
 def main():
     st.sidebar.title("Меню")
