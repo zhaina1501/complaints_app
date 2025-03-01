@@ -1,11 +1,5 @@
 import streamlit as st
 import os
-import tkinter as tk
-from tkinter import filedialog
-
-# Отключаем отображение окна Tkinter
-root = tk.Tk()
-root.withdraw()
 
 def select_folder():
     folder_selected = filedialog.askdirectory()
