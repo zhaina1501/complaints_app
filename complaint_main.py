@@ -14,7 +14,7 @@ def main_page():
     # Автоматически открываем WhatsApp Web в новом окне
     st.markdown(f"""
         <script>
-            window.open("{url}");
+            window.open("{url}", "_blank");
         </script>
     """, unsafe_allow_html=True)
 
