@@ -3,6 +3,5 @@ requests
 bs4
 pandas
 selenium
-webdriver-manager
 webbrowser
 pyautogui
