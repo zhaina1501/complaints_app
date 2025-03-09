@@ -1,13 +1,7 @@
 streamlit
 requests
 beautifulsoup4
-re
 pandas
-datetime
-os
-settings
-dataset
-time
+pyautogui
 datetime
 webbrowser
-pyautogui
