@@ -1,7 +1,7 @@
+python3.9
 streamlit
 requests
 beautifulsoup4
 pandas
 pyautogui
 datetime
-webbrowser
