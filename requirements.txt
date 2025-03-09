@@ -1,1 +1,13 @@
 streamlit
+requests
+bs4
+re
+pandas
+datetime
+os
+settings
+dataset
+time
+datetime
+webbrowser
+pyautogui
